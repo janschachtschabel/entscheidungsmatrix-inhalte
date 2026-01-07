@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4f46e5"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="1100" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="900" height="80" fill="url(#headerGrad)"/>
+  <text x="450" y="35" text-anchor="middle" fill="white" font-size="24" font-weight="bold">STUFE 1: Intake &amp; Hygiene</text>
+  <text x="450" y="60" text-anchor="middle" fill="#e0e7ff" font-size="14">Pflichtgate – keine Rechtsfreigabe, nur Klassifizierung</text>
+  
+  <!-- Start -->
+  <ellipse cx="450" cy="130" rx="80" ry="30" fill="#4f46e5" stroke="#3730a3" stroke-width="2"/>
+  <text x="450" y="135" text-anchor="middle" fill="white" font-size="14" font-weight="bold">START</text>
+  
+  <!-- Arrow to first decision -->
+  <line x1="450" y1="160" x2="450" y2="190" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Q1: Herkunft -->
+  <rect x="250" y="200" width="400" height="60" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="450" y="225" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="bold">1. Woher stammen die Daten?</text>
+  <text x="450" y="245" text-anchor="middle" fill="#1e40af" font-size="11">(Herkunft &amp; Zugangskanal bestimmen)</text>
+  
+  <!-- Arrow down -->
+  <line x1="450" y1="260" x2="450" y2="290" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Source Class Decision Diamond -->
+  <polygon points="450,300 580,370 450,440 320,370" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="450" y="360" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">source_class?</text>
+  <text x="450" y="380" text-anchor="middle" fill="#92400e" font-size="10">(OWN/COOP/PLATFORM/</text>
+  <text x="450" y="395" text-anchor="middle" fill="#92400e" font-size="10">UNCOOP/UNKNOWN)</text>
+  
+  <!-- UNCOOP Branch (left) -->
+  <line x1="320" y1="370" x2="150" y2="370" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="235" y="360" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">UNCOOP</text>
+  <rect x="50" y="340" width="100" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="100" y="365" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">🔴 STOP</text>
+  <text x="100" y="382" text-anchor="middle" fill="#dc2626" font-size="9">QUARANTÄNE</text>
+  
+  <!-- UNKNOWN Branch (right) -->
+  <line x1="580" y1="370" x2="750" y2="370" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="665" y="360" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="bold">UNKNOWN</text>
+  <rect x="750" y="340" width="120" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="810" y="365" text-anchor="middle" fill="#92400e" font-size="11" font-weight="bold">🟡 UNKLAR</text>
+  <text x="810" y="382" text-anchor="middle" fill="#92400e" font-size="9">FACTS-only</text>
+  
+  <!-- OWN/COOP/PLATFORM continue -->
+  <line x1="450" y1="440" x2="450" y2="480" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="460" y="465" fill="#059669" font-size="10">OWN/COOP/PLATFORM</text>
+  
+  <!-- Komponenten Box -->
+  <rect x="250" y="490" width="400" height="60" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="450" y="515" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="bold">2. Welche Komponenten enthalten?</text>
+  <text x="450" y="535" text-anchor="middle" fill="#1e40af" font-size="11">FACTS / TEXT / MEDIA / DERIVED markieren</text>
+  
+  <!-- Arrow -->
+  <line x1="450" y1="550" x2="450" y2="580" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Component Defaults Box -->
+  <rect x="200" y="590" width="500" height="90" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="450" y="615" text-anchor="middle" fill="#166534" font-size="12" font-weight="bold">Komponenten-Defaults (Stufe 1)</text>
+  <text x="230" y="640" fill="#166534" font-size="11">• FACTS: 🟢 speicherbar, weiter prüfbar</text>
+  <text x="230" y="658" fill="#166534" font-size="11">• TEXT/DERIVED: 🟡 als Kandidat markieren</text>
+  <text x="500" y="640" fill="#166534" font-size="11">• MEDIA: 🟡 nur Link speichern (keine Kopie!)</text>
+  <text x="500" y="658" fill="#166534" font-size="11">• ILLEGAL: 🔴 sofort isolieren</text>
+  
+  <!-- Arrow -->
+  <line x1="450" y1="680" x2="450" y2="710" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- PII Check -->
+  <polygon points="450,720 560,780 450,840 340,780" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="450" y="770" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">PII-Status?</text>
+  <text x="450" y="790" text-anchor="middle" fill="#92400e" font-size="10">(none/possible/high)</text>
+  
+  <!-- PII High without measures -->
+  <line x1="340" y1="780" x2="180" y2="780" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="260" y="770" fill="#dc2626" font-size="10" font-weight="bold">high + keine</text>
+  <text x="260" y="785" fill="#dc2626" font-size="10" font-weight="bold">Maßnahmen</text>
+  <rect x="50" y="750" width="130" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="115" y="775" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">🔴 PII_QUARANTINE</text>
+  <text x="115" y="792" text-anchor="middle" fill="#dc2626" font-size="9">=true</text>
+  
+  <!-- PII OK path -->
+  <line x1="450" y1="840" x2="450" y2="880" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="530" y="865" fill="#059669" font-size="10">none / bereinigt</text>
+  
+  <!-- Hygiene Box -->
+  <rect x="200" y="890" width="500" height="80" rx="8" fill="#e0e7ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="450" y="915" text-anchor="middle" fill="#3730a3" font-size="12" font-weight="bold">3. Hygiene-Checks durchführen</text>
+  <text x="230" y="940" fill="#3730a3" font-size="10">✓ Dubletten entfernen (DEDUP_OK)</text>
+  <text x="230" y="955" fill="#3730a3" font-size="10">✓ Evidenz speichern (URL, Hash, Timestamp)</text>
+  <text x="500" y="940" fill="#3730a3" font-size="10">✓ PII minimieren/anonymisieren</text>
+  <text x="500" y="955" fill="#3730a3" font-size="10">✓ Zugriff/Retention dokumentieren</text>
+  
+  <!-- Arrow to output -->
+  <line x1="450" y1="970" x2="450" y2="1000" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Output -->
+  <rect x="250" y="1010" width="400" height="60" rx="8" fill="#4f46e5" stroke="#3730a3" stroke-width="2"/>
+  <text x="450" y="1035" text-anchor="middle" fill="white" font-size="13" font-weight="bold">OUTPUT: Datenpass erstellen</text>
+  <text x="450" y="1055" text-anchor="middle" fill="#e0e7ff" font-size="11">→ Weiter zu STUFE 2 (Rechte &amp; Policies)</text>
+  
+  <!-- Legend -->
+  <rect x="20" y="1000" width="180" height="80" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="30" y="1020" fill="#475569" font-size="11" font-weight="bold">Legende:</text>
+  <text x="30" y="1040" fill="#22c55e" font-size="10">🟢 = speicherbar/OK</text>
+  <text x="30" y="1055" fill="#f59e0b" font-size="10">🟡 = Kandidat/prüfen</text>
+  <text x="30" y="1070" fill="#dc2626" font-size="10">🔴 = STOP/Quarantäne</text>
+</svg>

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <linearGradient id="headerGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#dc2626"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1000" height="1200" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="1000" height="80" fill="url(#headerGrad3)"/>
+  <text x="500" y="35" text-anchor="middle" fill="white" font-size="24" font-weight="bold">STUFE 3: Use-Case Auskunft</text>
+  <text x="500" y="60" text-anchor="middle" fill="#fef3c7" font-size="14">Finale Entscheidungsmatrix – Nur lesen, nicht neu bewerten!</text>
+  
+  <!-- Inputs -->
+  <rect x="50" y="100" width="400" height="80" rx="8" fill="#e0e7ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="250" y="125" text-anchor="middle" fill="#3730a3" font-size="12" font-weight="bold">INPUT: Datenpass (Stufe 1)</text>
+  <text x="70" y="145" fill="#3730a3" font-size="10">• source_class, components_present</text>
+  <text x="70" y="160" fill="#3730a3" font-size="10">• PII_QUARANTINE (true/false)</text>
+  
+  <rect x="550" y="100" width="400" height="80" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="750" y="125" text-anchor="middle" fill="#166534" font-size="12" font-weight="bold">INPUT: Rights Profile (Stufe 2)</text>
+  <text x="570" y="145" fill="#166534" font-size="10">• BLOCK.*, LIMIT.*, REQ.* Tags</text>
+  <text x="570" y="160" fill="#166534" font-size="10">• K.SEARCH/TRAIN/DS_NC/DS_COMM/MODEL_SHARE</text>
+  
+  <!-- Arrow down -->
+  <line x1="500" y1="180" x2="500" y2="210" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead3)"/>
+  
+  <!-- Global Override Check -->
+  <rect x="100" y="220" width="800" height="200" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="500" y="250" text-anchor="middle" fill="#dc2626" font-size="16" font-weight="bold">GLOBALE OVERRIDES (Priorität 1-4, in Reihenfolge prüfen)</text>
+  
+  <!-- Priority checks -->
+  <rect x="120" y="270" width="360" height="60" rx="6" fill="white" stroke="#dc2626" stroke-width="1"/>
+  <text x="130" y="290" fill="#dc2626" font-size="11" font-weight="bold">Prio 1: PII_QUARANTINE = true?</text>
+  <text x="130" y="308" fill="#dc2626" font-size="10">→ ALLE Use-Cases für ALLE Komponenten = 🔴</text>
+  <text x="130" y="323" fill="#dc2626" font-size="10">   Output: "QUARANTÄNE - PII nicht bereinigt"</text>
+  
+  <rect x="520" y="270" width="360" height="60" rx="6" fill="white" stroke="#dc2626" stroke-width="1"/>
+  <text x="530" y="290" fill="#dc2626" font-size="11" font-weight="bold">Prio 2: BLOCK.UNCOOP = true?</text>
+  <text x="530" y="308" fill="#dc2626" font-size="10">→ ALLE Use-Cases für ALLE Komponenten = 🔴</text>
+  <text x="530" y="323" fill="#dc2626" font-size="10">   Output: "BLOCK - Unkooperative Erhebung"</text>
+  
+  <rect x="120" y="340" width="360" height="60" rx="6" fill="white" stroke="#f59e0b" stroke-width="1"/>
+  <text x="130" y="360" fill="#92400e" font-size="11" font-weight="bold">Prio 3: BLOCK.PLATFORM_NO_OPTIN?</text>
+  <text x="130" y="378" fill="#92400e" font-size="10">→ TRAIN/DS/MODEL = 🔴 für alle K</text>
+  <text x="130" y="393" fill="#92400e" font-size="10">→ SEARCH: FACTS 🟢, TEXT/MEDIA 🟡</text>
+  
+  <rect x="520" y="340" width="360" height="60" rx="6" fill="white" stroke="#f59e0b" stroke-width="1"/>
+  <text x="530" y="360" fill="#92400e" font-size="11" font-weight="bold">Prio 4: LIMIT.NC_ONLY = true?</text>
+  <text x="530" y="378" fill="#92400e" font-size="10">→ DS_COMM = 🔴 für alle K</text>
+  <text x="530" y="393" fill="#92400e" font-size="10">→ MODEL_SHARE = 🔴 (Default)</text>
+  
+  <!-- Arrow -->
+  <line x1="500" y1="420" x2="500" y2="450" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead3)"/>
+  <text x="510" y="440" fill="#059669" font-size="10">Kein Override → weiter</text>
+  
+  <!-- Component Rules -->
+  <rect x="100" y="460" width="800" height="120" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="500" y="490" text-anchor="middle" fill="#1d4ed8" font-size="16" font-weight="bold">KOMPONENTENREGEL ("allowed by tags")</text>
+  
+  <text x="120" y="520" fill="#1d4ed8" font-size="12">Wenn kein globaler Override greift, gilt je Komponente K direkt aus Stufe 2:</text>
+  <text x="150" y="545" fill="#1d4ed8" font-size="11">SEARCH = K.SEARCH | TRAIN = K.TRAIN | DS-NC = K.DS_NC | DS-COMM = K.DS_COMM | MODEL-SHARE = K.MODEL_SHARE</text>
+  <text x="120" y="570" fill="#dc2626" font-size="11" font-weight="bold">⚠️ DERIVED darf nie freier sein als Basis: wenn Basis-Use-Case 🔴 → DERIVED ebenfalls 🔴</text>
+  
+  <!-- Arrow -->
+  <line x1="500" y1="580" x2="500" y2="610" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead3)"/>
+  
+  <!-- Result Matrix -->
+  <rect x="50" y="620" width="900" height="320" rx="12" fill="white" stroke="#22c55e" stroke-width="3"/>
+  <text x="500" y="655" text-anchor="middle" fill="#166534" font-size="18" font-weight="bold">ERGEBNIS-TABELLE (Use-Case Matrix)</text>
+  
+  <!-- Table Header -->
+  <rect x="70" y="680" width="120" height="40" fill="#f1f5f9"/>
+  <text x="130" y="705" text-anchor="middle" fill="#475569" font-size="11" font-weight="bold">Komponente</text>
+  
+  <rect x="190" y="680" width="130" height="40" fill="#dbeafe"/>
+  <text x="255" y="705" text-anchor="middle" fill="#1e40af" font-size="11" font-weight="bold">SEARCH</text>
+  
+  <rect x="320" y="680" width="130" height="40" fill="#fef3c7"/>
+  <text x="385" y="705" text-anchor="middle" fill="#92400e" font-size="11" font-weight="bold">TRAIN</text>
+  
+  <rect x="450" y="680" width="130" height="40" fill="#dcfce7"/>
+  <text x="515" y="705" text-anchor="middle" fill="#166534" font-size="11" font-weight="bold">DS-NC</text>
+  
+  <rect x="580" y="680" width="130" height="40" fill="#fce7f3"/>
+  <text x="645" y="705" text-anchor="middle" fill="#be185d" font-size="11" font-weight="bold">DS-COMM</text>
+  
+  <rect x="710" y="680" width="130" height="40" fill="#f3e8ff"/>
+  <text x="775" y="705" text-anchor="middle" fill="#7e22ce" font-size="11" font-weight="bold">MODEL-SHARE</text>
+  
+  <rect x="840" y="680" width="90" height="40" fill="#f1f5f9"/>
+  <text x="885" y="705" text-anchor="middle" fill="#475569" font-size="10" font-weight="bold">Auflagen</text>
+  
+  <!-- FACTS Row -->
+  <rect x="70" y="720" width="120" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="130" y="742" text-anchor="middle" fill="#1f2937" font-size="11" font-weight="bold">FACTS</text>
+  <rect x="190" y="720" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="255" y="742" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="320" y="720" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="385" y="742" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="450" y="720" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="515" y="742" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="580" y="720" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="645" y="742" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="710" y="720" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="775" y="742" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="840" y="720" width="90" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="885" y="742" text-anchor="middle" fill="#6b7280" font-size="9">DB_RISK?</text>
+  
+  <!-- TEXT Row -->
+  <rect x="70" y="755" width="120" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="130" y="777" text-anchor="middle" fill="#1f2937" font-size="11" font-weight="bold">TEXT</text>
+  <rect x="190" y="755" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="255" y="777" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="320" y="755" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="385" y="777" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="450" y="755" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="515" y="777" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="580" y="755" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="645" y="777" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="710" y="755" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="775" y="777" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="840" y="755" width="90" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="885" y="777" text-anchor="middle" fill="#6b7280" font-size="9">BY?</text>
+  
+  <!-- MEDIA Row -->
+  <rect x="70" y="790" width="120" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="130" y="812" text-anchor="middle" fill="#1f2937" font-size="11" font-weight="bold">MEDIA</text>
+  <rect x="190" y="790" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="255" y="812" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="320" y="790" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="385" y="812" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="450" y="790" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="515" y="812" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="580" y="790" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="645" y="812" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="710" y="790" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="775" y="812" text-anchor="middle" font-size="16">🟢/🟡/🔴</text>
+  <rect x="840" y="790" width="90" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="885" y="812" text-anchor="middle" fill="#6b7280" font-size="9">LINK_ONLY?</text>
+  
+  <!-- DERIVED Row -->
+  <rect x="70" y="825" width="120" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="130" y="847" text-anchor="middle" fill="#1f2937" font-size="11" font-weight="bold">DERIVED</text>
+  <rect x="190" y="825" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="255" y="847" text-anchor="middle" font-size="16">≤Basis</text>
+  <rect x="320" y="825" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="385" y="847" text-anchor="middle" font-size="16">≤Basis</text>
+  <rect x="450" y="825" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="515" y="847" text-anchor="middle" font-size="16">≤Basis</text>
+  <rect x="580" y="825" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="645" y="847" text-anchor="middle" font-size="16">≤Basis</text>
+  <rect x="710" y="825" width="130" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="775" y="847" text-anchor="middle" font-size="16">≤Basis</text>
+  <rect x="840" y="825" width="90" height="35" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="885" y="847" text-anchor="middle" fill="#6b7280" font-size="9">inherits</text>
+  
+  <!-- Notes -->
+  <text x="500" y="890" text-anchor="middle" fill="#475569" font-size="11" font-style="italic">Trage für jede Zelle das Ergebnis ein: 🟢 zulässig | 🟡 bedingt | 🔴 unzulässig</text>
+  <text x="500" y="910" text-anchor="middle" fill="#475569" font-size="11" font-style="italic">Notiere globale Auflagen (NC-Trennung, BY-Pflicht, etc.) separat</text>
+  
+  <!-- Mini Decision Tree -->
+  <rect x="100" y="960" width="800" height="140" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="500" y="990" text-anchor="middle" fill="#92400e" font-size="14" font-weight="bold">MINI-ENTSCHEIDUNGSBAUM (Quick Check)</text>
+  
+  <text x="120" y="1020" fill="#92400e" font-size="12">1️⃣ PII_QUARANTINE? → alles 🔴</text>
+  <text x="120" y="1040" fill="#92400e" font-size="12">2️⃣ UNCOOP? → alles 🔴</text>
+  <text x="120" y="1060" fill="#92400e" font-size="12">3️⃣ PLATFORM ohne Opt-in? → nur SEARCH (FACTS 🟢, TEXT/MEDIA 🟡), Rest 🔴</text>
+  <text x="120" y="1080" fill="#92400e" font-size="12">4️⃣ NC_ONLY? → DS-COMM 🔴, MODEL-SHARE 🔴</text>
+  <text x="120" y="1100" fill="#92400e" font-size="12">5️⃣ sonst: zeige K.SEARCH / K.TRAIN / K.DS_NC / K.DS_COMM / K.MODEL_SHARE pro Komponente</text>
+  
+  <!-- Legend -->
+  <rect x="100" y="1120" width="800" height="60" rx="8" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="130" y="1145" fill="#22c55e" font-size="13" font-weight="bold">🟢 Zulässig</text>
+  <text x="130" y="1165" fill="#22c55e" font-size="10">Standardmaßnahmen genügen</text>
+  <text x="380" y="1145" fill="#f59e0b" font-size="13" font-weight="bold">🟡 Bedingt zulässig</text>
+  <text x="380" y="1165" fill="#f59e0b" font-size="10">Nur mit Auflagen/Trennung</text>
+  <text x="650" y="1145" fill="#dc2626" font-size="13" font-weight="bold">🔴 Unzulässig</text>
+  <text x="650" y="1165" fill="#dc2626" font-size="10">Stopp/Quarantäne bis Klärung</text>
+</svg>
