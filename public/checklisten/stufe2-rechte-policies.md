@@ -1,231 +1,174 @@
-# STUFE 2: Rechte & Policy – Checkliste
+# Fragebogen Stufe 2 – Rechte & Policy
 
-> **Zweck:** Tags vergeben (BLOCK.*, LIMIT.*, REQ.*)  
-> **Wichtig:** Bei Kooperationsvertrag werden S2.3-S2.5 übersprungen!
-
----
-
-## 📋 Allgemeine Angaben
+> Antworten ankreuzen. Tags fließen in Stufe 3 ein. Bei TEXT/MEDIA getrennt beantworten.
 
 | Feld | Eintrag |
 |------|---------|
-| **Datum** | ___________________ |
-| **Prüfer:in** | ___________________ |
-| **Quelle/Domain** | ___________________ |
-| **Datenpass vorhanden?** | ☐ Ja ☐ Nein |
+| **Datum** | _______________ |
+| **Prüfer:in** | _______________ |
+| **Quelle** | _______________ |
 
 ---
 
-## 📥 INPUT AUS STUFE 1
+## S2-01 – uncoop_violation: Verbot missachtet?
 
-| Feld | Wert |
-|------|------|
-| **Herkunft** | ☐ Eigene ☐ Kooperation ☐ Plattform ☐ Unkooperativ ☐ Unbekannt |
-| **Kooperationsnachweis** | ☐ Ja ☐ Nein ☐ Unklar |
-| **Komponenten** | ☐ FACTS ☐ TEXT ☐ MEDIA ☐ Derivate |
-| **PII-Quarantäne** | ☐ Ja ☐ Nein |
-
-### ⚠️ Prüfung vor Beginn:
-
-| Ankreuzen | Bedingung | Aktion |
-|:---------:|-----------|--------|
-| ☐ | Eigene Daten | → **Stufe 2 überspringen** → Z4 SAFE ✅ |
-| ☐ | Unkooperativ | → Z0 BLOCK ⛔ (bereits blockiert) |
-| ☐ | PII-Quarantäne | → Z1 QUARANTÄNE ⛔ (bereits blockiert) |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `BLOCK.UNCOOP` |
+| ☐ | no | – |
 
 ---
 
-## S2.1 HERKUNFTS- & PLATTFORM-OVERRIDES
+## S2-02 – platform_ai_optin: Plattform KI-Opt-in?
 
-### S2-01: Verbot missachtet? *(nicht bei Eigene Daten)*
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `BLOCK.UNCOOP` → Z0 BLOCK ⛔ |
-| ☐ | **Nein** | → Weiter |
-
-### S2-02: KI-Opt-in vorhanden? *(nur bei Plattform)*
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | Rechteinhaber hat KI-Nutzung erlaubt → Weiter |
-| ☐ | **Nein** | → `BLOCK.PLATFORM_NO_OPTIN` → Z2 🟡 |
-| ☐ | **n/a** | Keine Plattform-Quelle |
-
-### S2-03: Anzeigeform? *(nur bei Plattform)*
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Nur verlinken** | → `REQ.LINK_ONLY` |
-| ☐ | **Kopie erlaubt** | → Weiter |
-| ☐ | **n/a** | Keine Plattform-Quelle |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | – |
+| ☐ | no | `BLOCK.PLATFORM_NO_OPTIN` |
+| ☐ | n/a | – |
 
 ---
 
-## S2.2 RECHTEKETTE *(nicht bei Eigene Daten)*
+## S2-03 – platform_display_mode: Darstellungsform
 
-### S2-04: Quelle berechtigt?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ist Rechteinhaber** | → Weiter |
-| ☐ | **Berechtigt** | Zur Weitergabe berechtigt → Weiter |
-| ☐ | **Unklar** | → `BLOCK.RIGHTS_UNKNOWN` (TEXT/MEDIA 🔴) |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | LINK_ONLY | `REQ.LINK_ONLY` |
+| ☐ | OK_COPY | – |
+| ☐ | n/a | – |
 
 ---
 
-## S2.3 LIZENZ *(nur ohne Kooperationsvertrag)*
+## S2-04 – rights_holder_status: Quelle berechtigt?
 
-> ⏭️ **Bei Kooperationsvertrag:** Abschnitt überspringen!
-
-### S2-05a: Lizenz für TEXT? *(nur wenn TEXT vorhanden)*
-
-| Ankreuzen | Wert | Tags |
-|:---------:|------|------|
-| ☐ | **CC0/Public Domain** | – |
-| ☐ | **CC BY** | `REQ.ATTRIBUTION` |
-| ☐ | **CC BY-NC** | `REQ.ATTRIBUTION` + `LIMIT.NC_ONLY` |
-| ☐ | **Proprietär** | `LIMIT.DISPLAY_ONLY` |
-| ☐ | **Unbekannt** | `BLOCK.LICENSE_UNKNOWN` 🔴 |
-
-### S2-05b: Lizenz für MEDIA? *(nur wenn MEDIA vorhanden)*
-
-| Ankreuzen | Wert | Tags |
-|:---------:|------|------|
-| ☐ | **CC0/Public Domain** | – |
-| ☐ | **CC BY** | `REQ.ATTRIBUTION` |
-| ☐ | **CC BY-NC** | `REQ.ATTRIBUTION` + `LIMIT.NC_ONLY` |
-| ☐ | **Proprietär** | `LIMIT.DISPLAY_ONLY` |
-| ☐ | **Unbekannt** | `BLOCK.LICENSE_UNKNOWN` 🔴 |
-
-### S2-06: Gemischte Lizenzen?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `LIMIT.MIXED_TREAT_AS_UNKNOWN` |
-| ☐ | **Nein** | Einheitliche Lizenz → Weiter |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | rights_holder | – |
+| ☐ | authorized | – |
+| ☐ | unknown | `BLOCK.RIGHTS_UNKNOWN` |
 
 ---
 
-## S2.4 NUTZUNGSBEDINGUNGEN / TDM *(nur ohne Kooperationsvertrag)*
+## S2-05 – license_status: Lizenz *(bei coop_present=yes überspringen)*
 
-> ⏭️ **Bei Kooperationsvertrag:** Abschnitt überspringen!
+**[TEXT]** *(falls TEXT vorhanden)*
 
-### S2-07: AGB verbieten KI-Nutzung?
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | CC0/PD | – |
+| ☐ | CC_BY | `REQ.ATTRIBUTION` |
+| ☐ | CC_BY_NC | `REQ.ATTRIBUTION`, `LIMIT.NC_ONLY` |
+| ☐ | Proprietary | `LIMIT.DISPLAY_ONLY` |
+| ☐ | Unknown | `BLOCK.LICENSE_UNKNOWN` |
 
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `BLOCK.TOS_AI` (Training 🔴) |
-| ☐ | **Nein** | → Weiter |
+**[MEDIA]** *(falls MEDIA vorhanden)*
 
-### S2-08: AGB verbieten Weitergabe?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `BLOCK.TOS_REDIST` (Dataset/Model 🔴) |
-| ☐ | **Nein** | → Weiter |
-
-### S2-09: TDM Opt-out vorhanden?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `BLOCK.TDM_OPTOUT` (Training 🔴) |
-| ☐ | **Nein** | → Weiter |
-
-### S2-10: robots.txt verbietet Crawl?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `LIMIT.CRAWL_DISALLOWED` |
-| ☐ | **Nein** | → Weiter |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | CC0/PD | – |
+| ☐ | CC_BY | `REQ.ATTRIBUTION` |
+| ☐ | CC_BY_NC | `REQ.ATTRIBUTION`, `LIMIT.NC_ONLY` |
+| ☐ | Proprietary | `LIMIT.DISPLAY_ONLY` |
+| ☐ | Unknown | `BLOCK.LICENSE_UNKNOWN` |
 
 ---
 
-## S2.5 DATENBANKRECHT *(nur ohne Kooperationsvertrag)*
+## S2-06 – mixed_licenses: Gemischte Lizenzen?
 
-> ⏭️ **Bei Kooperationsvertrag:** Abschnitt überspringen!
-
-### S2-11: Wesentliche Teile entnommen?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **Ja** | → `LIMIT.DB_RISK_COMM` (FACTS kommerziell 🔴) |
-| ☐ | **Nein** | → Weiter |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `LIMIT.MIXED_TREAT_AS_UNKNOWN` |
+| ☐ | no | – |
 
 ---
 
-## S2.6 DERIVATE *(nur wenn Derivate vorhanden)*
+## S2-07 – tos_ai_forbidden: AGB verbieten KI? *(bei coop_present=yes überspringen)*
 
-### S2-12: Derivat abgeleitet von?
-
-| Ankreuzen | Wert | Wirkung |
-|:---------:|------|--------|
-| ☐ | **FACTS** | Erbt Tags von FACTS |
-| ☐ | **TEXT** | Erbt Tags von TEXT |
-| ☐ | **MEDIA** | Erbt Tags von MEDIA |
-| ☐ | **Gemischt** | Erbt restriktivste Regel |
-
-> 💡 Derivate (COMPENDIUM_TEXT, QA_PAIRS, INDEX, MODEL_WEIGHTS) erben **alle** BLOCK/LIMIT-Tags
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `BLOCK.TOS_AI` |
+| ☐ | no | – |
 
 ---
 
-## 📊 OUTPUT: Gesammelte Tags
+## S2-08 – tos_redistribution_forbidden: AGB verbieten Weitergabe?
 
-### Blocker-Tags ⛔
-
-| Tag | ☐ | Wirkung |
-|-----|:-:|--------|
-| `BLOCK.UNCOOP` | ☐ | Alle = 🔴 |
-| `BLOCK.PII_QUARANTINE` | ☐ | Alle = 🔴 |
-| `BLOCK.PLATFORM_NO_OPTIN` | ☐ | Alle = 🔴 |
-| `BLOCK.RIGHTS_UNKNOWN` | ☐ | TEXT/MEDIA = 🔴 |
-| `BLOCK.LICENSE_UNKNOWN` | ☐ | TEXT/MEDIA = 🔴 |
-| `BLOCK.TOS_AI` | ☐ | Training/Model = 🔴 |
-| `BLOCK.TOS_REDIST` | ☐ | Dataset/Model = 🔴 |
-| `BLOCK.TDM_OPTOUT` | ☐ | Training/Model = 🔴 |
-
-### Limit-Tags 🟡
-
-| Tag | ☐ | Wirkung |
-|-----|:-:|--------|
-| `LIMIT.NC_ONLY` | ☐ | Kommerziell = 🔴 |
-| `LIMIT.DISPLAY_ONLY` | ☐ | Nur Anzeige erlaubt |
-| `LIMIT.MIXED_TREAT_AS_UNKNOWN` | ☐ | Wie Unbekannt |
-| `LIMIT.CRAWL_DISALLOWED` | ☐ | Crawl verboten |
-| `LIMIT.DB_RISK_COMM` | ☐ | FACTS kommerziell = 🔴 |
-
-### Auflagen 📝
-
-| Tag | ☐ | Wirkung |
-|-----|:-:|--------|
-| `REQ.ATTRIBUTION` | ☐ | Quellenangabe nötig |
-| `REQ.LINK_ONLY` | ☐ | Nur verlinken |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `BLOCK.TOS_REDIST` |
+| ☐ | no | – |
 
 ---
 
-## Pool-Zuordnung
+## S2-09 – tdm_optout_machine: TDM Opt-out (maschinell)?
 
-| Ankreuzen | Pool | Bedingung |
-|:---------:|------|-----------|
-| ☐ | **Z0 BLOCK** ⛔ | BLOCK.UNCOOP |
-| ☐ | **Z1 QUARANTÄNE** ⛔ | BLOCK.PII_QUARANTINE |
-| ☐ | **Z2 PLATFORM** 🟡 | BLOCK.PLATFORM_NO_OPTIN |
-| ☐ | **Z3 NC** 🟡 | LIMIT.NC_ONLY |
-| ☐ | **Z4 SAFE** ✅ | Keine Blocker |
-| ☐ | **Z5 UNKLAR** ❓ | Herkunft unbekannt |
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `BLOCK.TDM_OPTOUT` |
+| ☐ | no | – |
 
 ---
 
-## ➡️ WEITER ZU STUFE 3?
+## S2-10 – robots_disallow_crawl: robots.txt verbietet Crawl?
 
-| ☐ | Voraussetzung |
-|:-:|---------------|
-| ☐ | Alle Fragen beantwortet |
-| ☐ | Tags dokumentiert |
-| ☐ | Pool zugeordnet |
-
-> 💡 **Bei Kooperationsvertrag:** S2.3-S2.5 wurden übersprungen (Vertrag regelt Rechte)
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `LIMIT.CRAWL_DISALLOWED` |
+| ☐ | no | – |
 
 ---
 
-**Unterschrift:** ___________________ **Datum:** ___________________
+## S2-11 – db_mass_extraction: Datenbank wesentlich entnommen?
+
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | yes | `LIMIT.DB_RISK_COMM` |
+| ☐ | no | – |
+
+---
+
+## S2-12 – derived_from: Derivat abgeleitet von? *(falls Derivate vorhanden)*
+
+| | Antwort | Tag |
+|:-:|---------|-----|
+| ☐ | FACTS | erbt FACTS-Tags |
+| ☐ | TEXT | erbt TEXT-Tags |
+| ☐ | MEDIA | erbt MEDIA-Tags |
+| ☐ | MIXED | erbt alle Tags |
+
+---
+
+## Gesetzte Tags (Zusammenfassung)
+
+**BLOCK-Tags:**
+
+| Tag | ☐ |
+|-----|:-:|
+| `BLOCK.UNCOOP` | ☐ |
+| `BLOCK.PLATFORM_NO_OPTIN` | ☐ |
+| `BLOCK.RIGHTS_UNKNOWN` | ☐ |
+| `BLOCK.LICENSE_UNKNOWN` | ☐ |
+| `BLOCK.TOS_AI` | ☐ |
+| `BLOCK.TOS_REDIST` | ☐ |
+| `BLOCK.TDM_OPTOUT` | ☐ |
+
+**LIMIT-Tags:**
+
+| Tag | ☐ |
+|-----|:-:|
+| `LIMIT.NC_ONLY` | ☐ |
+| `LIMIT.DISPLAY_ONLY` | ☐ |
+| `LIMIT.MIXED_TREAT_AS_UNKNOWN` | ☐ |
+| `LIMIT.CRAWL_DISALLOWED` | ☐ |
+| `LIMIT.DB_RISK_COMM` | ☐ |
+
+**REQ-Tags:**
+
+| Tag | ☐ |
+|-----|:-:|
+| `REQ.ATTRIBUTION` | ☐ |
+| `REQ.LINK_ONLY` | ☐ |
+
+---
+
+**→ Weiter zu Stufe 3** *(Tags in Matrix eintragen)*
