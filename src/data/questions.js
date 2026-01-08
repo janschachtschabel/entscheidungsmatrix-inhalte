@@ -1,44 +1,78 @@
+// Fragen nach neuem Schema: S1.1-S1.3, S2.1-S2.6
 export const questions = [
-  // Stufe 1: Intake & Hygiene
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STUFE 1 – INTAKE & HYGIENE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // S1.1 Quelle & Zugriff (Herkunftsklasse)
   {
-    id: 'sourceClass',
+    id: 'source_class',
     stage: 1,
-    question: 'Woher stammen die Daten und wie wurden sie erhoben?',
-    hint: 'Die Herkunft bestimmt die Grundbewertung und mögliche Einschränkungen.',
+    section: 'S1.1',
+    question: 'S1-01: Herkunft/Zugriff – Wie wurden die Daten erhoben?',
+    hint: 'Die Herkunftsklasse bestimmt den initialen Pool-Vorschlag.',
     options: [
-      { value: 'OWN', label: 'Eigene Daten (OWN)', description: 'Eigene Redaktion, intern erzeugte Inhalte, KI ohne Fremdmaterial' },
-      { value: 'COOP', label: 'Kooperation (COOP)', description: 'Partnerlieferung, autorisierte API/Feeds, Vertrag vorhanden' },
-      { value: 'PLATFORM', label: 'Plattform (PLATFORM)', description: 'YouTube, Social Media APIs, Plattform-Daten' },
-      { value: 'UNCOOP', label: 'Unkooperativ (UNCOOP)', description: 'Scraping trotz Verbot, Umgehung technischer Barrieren' },
-      { value: 'UNKNOWN', label: 'Unbekannt (UNKNOWN)', description: 'Herkunft/Zugang nicht belegbar' }
+      { value: 'OWN', label: 'OWN – Eigene Daten', description: 'Eigene Redaktion, intern erzeugte Inhalte' },
+      { value: 'COOP', label: 'COOP – Kooperation', description: 'Partnerlieferung, autorisierte API/Feeds' },
+      { value: 'PLATFORM', label: 'PLATFORM – Plattform', description: 'YouTube, Social Media APIs, Plattform-Daten' },
+      { value: 'UNCOOP', label: 'UNCOOP – Unkooperativ', description: 'Scraping trotz Verbot, Umgehung technischer Barrieren → BLOCK' },
+      { value: 'UNKNOWN', label: 'UNKNOWN – Unbekannt', description: 'Herkunft/Zugang nicht belegbar' }
     ]
   },
   {
-    id: 'sourceDomain',
+    id: 'coop_present',
     stage: 1,
-    question: 'Von welcher Domain/Quelle stammen die Daten?',
-    hint: 'Geben Sie die Haupt-Domain oder den Quellnamen an.',
-    type: 'text',
-    placeholder: 'z.B. example.com, Partner-API, Interne Redaktion'
+    section: 'S1.1',
+    question: 'S1-02: Kooperationsnachweis vorhanden?',
+    hint: 'Ein Kooperationsnachweis fließt in Stufe 2 ein.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN',
+    options: [
+      { value: 'yes', label: 'Ja', description: 'Nachweis über Kooperation liegt vor' },
+      { value: 'no', label: 'Nein', description: 'Kein Kooperationsnachweis' },
+      { value: 'unknown', label: 'Unklar', description: 'Nicht feststellbar' }
+    ]
   },
+
+  // S1.2 Komponenten-Check
   {
-    id: 'components',
+    id: 'components_present',
     stage: 1,
-    question: 'Welche Komponenten enthält die Datenlieferung?',
-    hint: 'Mehrfachauswahl möglich. Jede Komponente wird separat bewertet.',
+    section: 'S1.2',
+    question: 'S1-03: Welche Komponenten enthält der Datensatz?',
+    hint: 'Mehrfachauswahl. Steuert relevante Zeilen in der Entscheidungsmatrix.',
+    condition: (answers) => answers.source_class !== 'UNCOOP',
     multiSelect: true,
     options: [
-      { value: 'FACTS', label: 'FACTS', description: 'Titel, Autor, Jahr, URL, Schlagworte, formale Felder' },
-      { value: 'TEXT', label: 'TEXT', description: 'Beschreibung, Abstract, Fließtext' },
-      { value: 'MEDIA', label: 'MEDIA', description: 'Thumbnail, Bild, Preview, Video' },
-      { value: 'DERIVED', label: 'DERIVED', description: 'Embeddings, Summaries, Klassifikationsergebnisse' }
+      { value: 'FACTS', label: 'FACTS', description: 'Strukturierte Fakten: Titel, Autor, Jahr, URL, Schlagworte' },
+      { value: 'TEXT', label: 'TEXT', description: 'Texte (schöpferisch): Beschreibung, Abstract, Fließtext' },
+      { value: 'MEDIA', label: 'MEDIA', description: 'Bilder/Videos: Thumbnails, Previews' },
+      { value: 'COMPENDIUM_TEXT', label: 'COMPENDIUM_TEXT', description: 'Derivat: Zusammenfassungen aus Text/Media' },
+      { value: 'QA_PAIRS', label: 'QA_PAIRS', description: 'Derivat: Frage-Antwort-Paare' },
+      { value: 'INDEX', label: 'INDEX', description: 'Derivat: Suchindex/Embeddings' },
+      { value: 'MODEL_WEIGHTS', label: 'MODEL_WEIGHTS', description: 'Derivat: Trainierte Modellgewichte' }
     ]
   },
   {
-    id: 'piiStatus',
+    id: 'media_storage_mode',
     stage: 1,
-    question: 'Enthält die Lieferung personenbezogene Daten (PII)?',
-    hint: 'Bei hohem PII-Risiko ohne Bereinigung wird Quarantäne ausgelöst.',
+    section: 'S1.2',
+    question: 'S1-04: Umgang mit Mediendateien?',
+    hint: 'COPIED nur zulässig wenn Rechte in Stufe 2 geklärt.',
+    condition: (answers) => answers.components_present?.includes('MEDIA'),
+    options: [
+      { value: 'LINK_ONLY', label: 'Nur verlinken', description: 'Medien werden nur verlinkt, nicht kopiert → REQ.LINK_ONLY' },
+      { value: 'COPIED', label: 'Kopiert', description: 'Medien werden lokal gespeichert' }
+    ]
+  },
+
+  // S1.3 Datenschutz / PII-Check
+  {
+    id: 'pii_status',
+    stage: 1,
+    section: 'S1.3',
+    question: 'S1-05: Personenbezogene Daten (PII) im Datensatz?',
+    hint: 'Bei hohem Risiko ohne Mitigation → BLOCK.PII_QUARANTINE.',
+    condition: (answers) => answers.source_class !== 'UNCOOP',
     options: [
       { value: 'none', label: 'Keine PII', description: 'Keine personenbezogenen Daten erkennbar' },
       { value: 'possible', label: 'PII möglich', description: 'Möglicherweise personenbezogene Daten enthalten' },
@@ -46,143 +80,217 @@ export const questions = [
     ]
   },
   {
-    id: 'piiHandling',
+    id: 'pii_mitigated',
     stage: 1,
-    question: 'Wurden PII-Maßnahmen durchgeführt?',
-    hint: 'Minimierung, Anonymisierung oder Zugriffsbeschränkung.',
-    condition: (answers) => answers.piiStatus === 'possible' || answers.piiStatus === 'high',
+    section: 'S1.3',
+    question: 'S1-06: PII erfolgreich minimiert/anonymisiert?',
+    hint: 'Bei Nein und hohem PII-Risiko → BLOCK.PII_QUARANTINE bleibt.',
+    condition: (answers) => answers.pii_status === 'high',
     options: [
-      { value: 'minimized', label: 'Minimiert', description: 'Unnötige personenbezogene Felder entfernt/verkürzt' },
-      { value: 'anonymized', label: 'Anonymisiert', description: 'Identifikatoren entfernt/ersetzt' },
-      { value: 'restricted', label: 'Zugriff beschränkt', description: 'Zugriff und Retention eingeschränkt' },
-      { value: 'none', label: 'Keine Maßnahmen', description: 'Keine PII-Bereinigung durchgeführt' }
+      { value: true, label: 'Ja, erfolgreich mitigiert', description: 'PII wurden entfernt/anonymisiert' },
+      { value: false, label: 'Nein, nicht mitigiert', description: 'PII noch vorhanden → Quarantäne' }
     ]
   },
 
-  // Stufe 2: Rechte & Policies
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STUFE 2 – RECHTE & POLICY
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // S2.1 Herkunfts- & Plattform-Overrides (Priorität)
   {
-    id: 'platformOptIn',
+    id: 'uncoop_violation',
     stage: 2,
-    question: 'Liegt ein Opt-in der Rechteinhaber für Plattformdaten vor?',
-    hint: 'Relevant wenn source_class = PLATFORM. Ohne Opt-in sind KI/Training/Sharing gesperrt.',
-    condition: (answers) => answers.sourceClass === 'PLATFORM',
+    section: 'S2.1',
+    question: 'S2-01: Unkooperative Nutzung gegen explizite Verbote?',
+    hint: 'Scraping trotz Verbot, Umgehung technischer Barrieren.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN',
     options: [
-      { value: true, label: 'Ja, Opt-in vorhanden', description: 'Rechteinhaber hat explizit zugestimmt' },
-      { value: false, label: 'Nein, kein Opt-in', description: 'Keine explizite Zustimmung vorhanden' }
+      { value: true, label: 'Ja, Verbot missachtet', description: '→ BLOCK.UNCOOP' },
+      { value: false, label: 'Nein', description: 'Kein Verstoß' }
     ]
   },
   {
-    id: 'rightsStatus',
+    id: 'platform_ai_optin',
     stage: 2,
-    question: 'Ist die Quelle Rechteinhaber oder ausdrücklich berechtigt?',
-    hint: 'Aggregatoren ohne eigene Rechte führen zu Einschränkungen für TEXT/MEDIA.',
+    section: 'S2.1',
+    question: 'S2-02: Plattform: KI-Opt-in vorhanden?',
+    hint: 'Ohne Opt-in bei Plattform-Daten → BLOCK.PLATFORM_NO_OPTIN.',
+    condition: (answers) => answers.source_class === 'PLATFORM',
     options: [
-      { value: 'rights_holder', label: 'Rechteinhaber', description: 'Quelle ist selbst Rechteinhaber' },
-      { value: 'authorized', label: 'Berechtigt', description: 'Quelle ist ausdrücklich zur Weitergabe berechtigt' },
-      { value: 'aggregator_no_rights', label: 'Aggregator ohne Rechte', description: 'Quelle aggregiert fremde Inhalte ohne eigene Rechte' },
-      { value: 'unknown', label: 'Unklar', description: 'Rechtebasis nicht geklärt' }
+      { value: 'yes', label: 'Ja, Opt-in vorhanden', description: 'Rechteinhaber hat KI-Nutzung erlaubt' },
+      { value: 'no', label: 'Nein, kein Opt-in', description: '→ BLOCK.PLATFORM_NO_OPTIN' },
+      { value: 'n/a', label: 'Nicht anwendbar', description: 'Keine Plattform-Quelle' }
     ]
   },
   {
-    id: 'hasContract',
+    id: 'platform_display_mode',
     stage: 2,
-    question: 'Gibt es einen Vertrag/Kooperationsvereinbarung?',
-    hint: 'Verträge können Nutzungsrechte erweitern oder einschränken.',
+    section: 'S2.1',
+    question: 'S2-03: Plattform: Anzeigeform erlaubt?',
+    hint: 'LINK_ONLY = nur einbetten, keine Kopie.',
+    condition: (answers) => answers.source_class === 'PLATFORM',
     options: [
-      { value: true, label: 'Ja, Vertrag vorhanden', description: 'Es existiert eine vertragliche Vereinbarung' },
-      { value: false, label: 'Nein, kein Vertrag', description: 'Keine vertragliche Regelung' }
+      { value: 'LINK_ONLY', label: 'Nur verlinken', description: '→ REQ.LINK_ONLY' },
+      { value: 'OK_COPY', label: 'Kopie erlaubt', description: 'Kopieren ist gestattet' },
+      { value: 'n/a', label: 'Nicht anwendbar', description: 'Keine Plattform-Quelle' }
+    ]
+  },
+
+  // S2.2 Rechtekette / Rechteinhaber
+  {
+    id: 'rights_holder_status',
+    stage: 2,
+    section: 'S2.2',
+    question: 'S2-04: Quelle berechtigt (Rechteinhaber)?',
+    hint: 'Bei Unklar → BLOCK.RIGHTS_UNKNOWN für TEXT/MEDIA/Derivate.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN',
+    options: [
+      { value: 'rights_holder', label: 'Ist Rechteinhaber', description: 'Quelle ist selbst Rechteinhaber' },
+      { value: 'authorized', label: 'Berechtigt', description: 'Quelle ist zur Weitergabe berechtigt' },
+      { value: 'unknown', label: 'Unklar', description: '→ BLOCK.RIGHTS_UNKNOWN' }
+    ]
+  },
+
+  // S2.3 Lizenz je Komponente
+  {
+    id: 'license_text',
+    stage: 2,
+    section: 'S2.3',
+    question: 'S2-05a: Lizenz für TEXT-Komponente?',
+    hint: 'Bei UNKNOWN → BLOCK.LICENSE_UNKNOWN. NC → LIMIT.NC_ONLY.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes' && answers.components_present?.includes('TEXT'),
+    options: [
+      { value: 'CC0_PD', label: 'CC0/PD – Public Domain', description: 'Keine Einschränkungen' },
+      { value: 'CC_BY', label: 'CC BY', description: '→ REQ.ATTRIBUTION' },
+      { value: 'CC_BY_NC', label: 'CC BY-NC', description: '→ REQ.ATTRIBUTION + LIMIT.NC_ONLY' },
+      { value: 'PROPRIETARY', label: 'Proprietär', description: '→ LIMIT.DISPLAY_ONLY' },
+      { value: 'UNKNOWN', label: 'Unbekannt', description: '→ BLOCK.LICENSE_UNKNOWN' }
     ]
   },
   {
-    id: 'contractProhibitsAI',
+    id: 'license_media',
     stage: 2,
-    question: 'Verbietet der Vertrag KI-Training?',
-    hint: 'Vertragliche Einschränkungen haben Vorrang.',
-    condition: (answers) => answers.hasContract === true,
+    section: 'S2.3',
+    question: 'S2-05b: Lizenz für MEDIA-Komponente?',
+    hint: 'Bei UNKNOWN → BLOCK.LICENSE_UNKNOWN. NC → LIMIT.NC_ONLY.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes' && answers.components_present?.includes('MEDIA'),
     options: [
-      { value: true, label: 'Ja, KI verboten', description: 'Vertrag untersagt KI-Training/Fine-Tuning' },
-      { value: false, label: 'Nein, erlaubt oder nicht geregelt', description: 'Vertrag erlaubt KI oder schweigt dazu' }
+      { value: 'CC0_PD', label: 'CC0/PD – Public Domain', description: 'Keine Einschränkungen' },
+      { value: 'CC_BY', label: 'CC BY', description: '→ REQ.ATTRIBUTION' },
+      { value: 'CC_BY_NC', label: 'CC BY-NC', description: '→ REQ.ATTRIBUTION + LIMIT.NC_ONLY' },
+      { value: 'PROPRIETARY', label: 'Proprietär', description: '→ LIMIT.DISPLAY_ONLY' },
+      { value: 'UNKNOWN', label: 'Unbekannt', description: '→ BLOCK.LICENSE_UNKNOWN' }
     ]
   },
   {
-    id: 'contractProhibitsRedist',
+    id: 'mixed_licenses',
     stage: 2,
-    question: 'Verbietet der Vertrag Weitergabe/Redistribution?',
-    hint: 'Betrifft Dataset-Weitergabe (NC und kommerziell).',
-    condition: (answers) => answers.hasContract === true,
+    section: 'S2.3',
+    question: 'S2-06: Gemischte Lizenztypen im Datensatz?',
+    hint: 'Bei Ja → LIMIT.MIXED_TREAT_AS_UNKNOWN (wirkt wie Unbekannt).',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
     options: [
-      { value: true, label: 'Ja, Weitergabe verboten', description: 'Vertrag untersagt Redistribution' },
-      { value: false, label: 'Nein, erlaubt oder nicht geregelt', description: 'Vertrag erlaubt Weitergabe oder schweigt dazu' }
+      { value: true, label: 'Ja, gemischt', description: '→ LIMIT.MIXED_TREAT_AS_UNKNOWN' },
+      { value: false, label: 'Nein, einheitlich', description: 'Alle Items gleiche Lizenz' }
+    ]
+  },
+
+  // S2.4 Nutzungsbedingungen / Robots / TDM-Opt-out
+  {
+    id: 'tos_ai_forbidden',
+    stage: 2,
+    section: 'S2.4',
+    question: 'S2-07: AGB verbieten KI-Nutzung?',
+    hint: 'Bei Ja → BLOCK.TOS_AI. Bei Kooperationsvertrag irrelevant.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
+    options: [
+      { value: true, label: 'Ja, verboten', description: '→ BLOCK.TOS_AI' },
+      { value: false, label: 'Nein', description: 'Keine AGB-Einschränkung' }
     ]
   },
   {
-    id: 'licenseStatus',
+    id: 'tos_redistribution_forbidden',
     stage: 2,
-    question: 'Ist die Lizenz bekannt und belegt?',
-    hint: 'Unbekannte Lizenzen führen zu Sperrung von TEXT/MEDIA.',
+    section: 'S2.4',
+    question: 'S2-08: AGB verbieten Weitergabe/Redistribution?',
+    hint: 'Bei "Ja" → BLOCK.TOS_REDIST. Bei Kooperationsvertrag irrelevant.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
     options: [
-      { value: 'known', label: 'Ja, bekannt und belegt', description: 'Lizenz ist dokumentiert und nachweisbar' },
-      { value: 'unknown', label: 'Unbekannt', description: 'Lizenz ist nicht bekannt' },
-      { value: 'no_evidence', label: 'Kein Nachweis', description: 'Lizenz behauptet aber nicht belegt' }
+      { value: true, label: 'Ja, verboten', description: '→ BLOCK.TOS_REDIST' },
+      { value: false, label: 'Nein', description: 'Keine AGB-Einschränkung' }
     ]
   },
   {
-    id: 'licenseType',
+    id: 'tdm_optout_machine',
     stage: 2,
-    question: 'Welche Lizenz liegt vor?',
-    hint: 'Die Lizenz bestimmt erlaubte Nutzungsarten.',
-    condition: (answers) => answers.licenseStatus === 'known',
+    section: 'S2.4',
+    question: 'S2-09: Maschinenlesbares TDM Opt-out vorhanden?',
+    hint: 'robots.txt, ai.txt, TDM-Reservation. Bei Kooperationsvertrag irrelevant.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
     options: [
-      { value: 'CC0', label: 'CC0 / Public Domain', description: 'Keine Einschränkungen' },
-      { value: 'CC_BY', label: 'CC BY', description: 'Namensnennung erforderlich' },
-      { value: 'CC_BY_NC', label: 'CC BY-NC', description: 'Namensnennung + nur nicht-kommerziell' },
-      { value: 'proprietary', label: 'Proprietär', description: 'Eigene Lizenz, eingeschränkte Nutzung' }
+      { value: true, label: 'Ja, TDM Opt-out vorhanden', description: '→ BLOCK.TDM_OPTOUT' },
+      { value: false, label: 'Nein', description: 'Kein TDM Opt-out' }
     ]
   },
   {
-    id: 'tosProhibitsAI',
+    id: 'robots_disallow_crawl',
     stage: 2,
-    question: 'Verbieten die AGB/ToS der Quelle KI-Training?',
-    hint: 'ToS-Einschränkungen gelten unabhängig von Lizenzen.',
+    section: 'S2.4',
+    question: 'S2-10: robots.txt untersagt Crawler?',
+    hint: 'Bei Kooperationsvertrag irrelevant (Vertrag überschreibt).',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
     options: [
-      { value: true, label: 'Ja, verboten', description: 'AGB/ToS untersagen KI-Training explizit' },
-      { value: false, label: 'Nein', description: 'Keine Einschränkung in AGB/ToS' }
+      { value: true, label: 'Ja, Crawl verboten', description: '→ LIMIT.CRAWL_DISALLOWED' },
+      { value: false, label: 'Nein', description: 'Crawl erlaubt' }
     ]
   },
+
+  // S2.5 Datenbankrecht / Massenentnahme
   {
-    id: 'tosProhibitsRedist',
+    id: 'db_mass_extraction',
     stage: 2,
-    question: 'Verbieten die AGB/ToS Redistribution/Weitergabe?',
-    hint: 'Betrifft Dataset-Weitergabe.',
+    section: 'S2.5',
+    question: 'S2-11: Wesentliche Teile systematisch entnommen (DB-Recht)?',
+    hint: 'Bei Kooperationsvertrag durch Vertrag geregelt.',
+    condition: (answers) => answers.source_class !== 'UNCOOP' && answers.source_class !== 'OWN' && answers.coop_present !== 'yes',
     options: [
-      { value: true, label: 'Ja, verboten', description: 'AGB/ToS untersagen Weitergabe explizit' },
-      { value: false, label: 'Nein', description: 'Keine Einschränkung in AGB/ToS' }
+      { value: true, label: 'Ja, wesentliche Entnahme', description: '→ LIMIT.DB_RISK_COMM' },
+      { value: false, label: 'Nein', description: 'Kein DB-Risiko' }
     ]
   },
+
+  // S2.6 Derivate: Vererbungsregel
   {
-    id: 'tdmOptOut',
+    id: 'derived_from',
     stage: 2,
-    question: 'Liegt ein TDM-Opt-out vor (KI/Data-Mining untersagt)?',
-    hint: 'Z.B. robots.txt ai.txt oder explizite TDM-Reservation.',
+    section: 'S2.6',
+    question: 'S2-12: Derivat abgeleitet von welchem Ursprungstyp?',
+    hint: 'Derivate übernehmen BLOCK/LIMIT-Tags der Ursprungskomponenten.',
+    condition: (answers) => {
+      const derivates = ['COMPENDIUM_TEXT', 'QA_PAIRS', 'INDEX', 'MODEL_WEIGHTS'];
+      return answers.components_present?.some(c => derivates.includes(c));
+    },
     options: [
-      { value: true, label: 'Ja, TDM-Opt-out', description: 'Quelle hat TDM/KI-Nutzung explizit untersagt' },
-      { value: false, label: 'Nein', description: 'Kein Opt-out vorhanden' }
-    ]
-  },
-  {
-    id: 'dbRiskHigh',
-    stage: 2,
-    question: 'Besteht Datenbankrecht-Risiko bei kommerzieller Nutzung?',
-    hint: 'Systematischer Abruf ohne Vertrag kann DB-Recht verletzen.',
-    options: [
-      { value: true, label: 'Ja, hohes Risiko', description: 'Systematische/kommerzielle Nutzung problematisch' },
-      { value: false, label: 'Nein', description: 'Kein besonderes DB-Risiko' }
+      { value: 'FACTS', label: 'FACTS', description: 'Abgeleitet aus strukturierten Fakten' },
+      { value: 'TEXT', label: 'TEXT', description: 'Abgeleitet aus Texten' },
+      { value: 'MEDIA', label: 'MEDIA', description: 'Abgeleitet aus Medien' },
+      { value: 'MIXED', label: 'MIXED', description: 'Gemischt → restriktivste Regel' }
     ]
   }
 ];
 
 export const stages = [
-  { id: 1, label: 'Stufe 1: Intake', description: 'Herkunft & Hygiene' },
-  { id: 2, label: 'Stufe 2: Rechte', description: 'Policies & Lizenzen' },
-  { id: 3, label: 'Stufe 3: Ergebnis', description: 'Use-Case Matrix' }
+  { id: 1, label: 'Stufe 1: Intake & Hygiene', description: 'S1.1-S1.3' },
+  { id: 2, label: 'Stufe 2: Rechte & Policy', description: 'S2.1-S2.6' },
+  { id: 3, label: 'Stufe 3: Entscheidungsmatrix', description: 'Use Cases vs. Komponenten' }
 ];
+
+// Pool-Zuordnungen
+export const POOLS = {
+  Z0_BLOCK: { id: 'Z0', label: 'BLOCK', description: 'Nutzung untersagt', color: 'red' },
+  Z1_QUARANTINE: { id: 'Z1', label: 'QUARANTINE', description: 'PII-Quarantäne', color: 'red' },
+  Z2_PLATFORM: { id: 'Z2', label: 'PLATFORM', description: 'Plattform ohne Opt-in', color: 'orange' },
+  Z3_NC: { id: 'Z3', label: 'NC', description: 'Nur nicht-kommerziell', color: 'orange' },
+  Z4_SAFE: { id: 'Z4', label: 'SAFE', description: 'Keine Einschränkungen', color: 'green' },
+  Z5_UNKLAR: { id: 'Z5', label: 'UNKLAR', description: 'Klärung in Stufe 2 nötig', color: 'gray' }
+};
